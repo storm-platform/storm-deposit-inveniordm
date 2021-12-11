@@ -63,6 +63,7 @@ setup(
             "storm-deposit-inveniordm = storm_deposit_inveniordm:StormDepositInvenioRDM"
         ],
         "invenio_celery.tasks": [
+            "storm_deposit_gkhub = storm_deposit_inveniordm.contrib.gkhub.tasks",
             "storm_deposit_inveniordm = storm_deposit_inveniordm.contrib.inveniordm.tasks",
         ],
     },
