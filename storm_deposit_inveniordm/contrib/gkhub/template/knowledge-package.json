@@ -1,0 +1,16 @@
+{
+    "metadata": {
+        "publisher": "Storm Web Service",
+        "publication_date": "{{now}}",
+        "title": "Knowledge Package - {{kpackage.metadata['title']}}",
+        "description": "{{kpackage.metadata['description']}}",
+        "subjects": {{kpackage.metadata["subjects"]}},
+        "rights": {{kpackage.metadata["rights"]}},
+        "creators": {{kpackage.metadata["creators"]}},
+        "contributors": {{kpackage.metadata["contributors"]}},
+        "locations": {{kpackage.metadata["locations"]}},
+        "dates": {{kpackage.metadata["dates"]}},
+        "resource_type": {"id": "knowledge"},
+        "files": {"enabled": False},
+    }
+}

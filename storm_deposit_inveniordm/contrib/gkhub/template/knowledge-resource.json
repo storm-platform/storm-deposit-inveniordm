@@ -1,0 +1,23 @@
+{
+    "metadata": {
+        "publisher": "Storm Web Service",
+        "publication_date": "{{now}}",
+        "title": "Knowledge Resource - {{pipeline.metadata['title']}}",
+        "description": "{{pipeline.metadata['description']}}",
+        "version": "{{pipeline.metadata['version']}}",
+        "rights": {{project.metadata["rights"]}},
+        "creators": {{project.metadata["creators"]}},
+        "related_identifiers": [
+            {
+                "identifier": "{{instance_pid}}/{{kpackage['id']}}",
+                "relation_type": {"id": "ispartof", "title": {"en": "Is part of"}},
+                "resource_type": {
+                    "id": "knowledge",
+                    "title": {"en": "Knowledge Package"},
+                },
+                "scheme": "doi",
+            }
+        ],
+        "resource_type": {"id": "software"},
+    }
+}

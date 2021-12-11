@@ -6,7 +6,9 @@
 # modify it under the terms of the MIT License; see LICENSE file for more
 # details.
 
-CONTRIB_MODULES = [
-    "storm_deposit_inveniordm.contrib.gkhub",
-    "storm_deposit_inveniordm.contrib.inveniordm",
-]
+from datetime import datetime
+
+
+def date_now_iso8601():
+    """Generate a complete ISO8601 date string with the actual date."""
+    return datetime.today().strftime("%Y-%m-%d")

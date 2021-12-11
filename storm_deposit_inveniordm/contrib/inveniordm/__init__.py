@@ -8,6 +8,7 @@
 
 from . import config
 from .tasks import service_task
+from ...proxies import invenio_rdm_server_url
 
 
 class PluginService:
@@ -21,7 +22,9 @@ class PluginService:
         },
     }
 
+    extras = {"url": invenio_rdm_server_url}
+
 
 def init_contrib(registry):
     """Initialize the InvenioRDM contrib services."""
-    registry.register("deposit-inveniordm", PluginService)
+    registry.register(config.PLUGIN_SERVICE_NAME, PluginService)

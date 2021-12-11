@@ -17,6 +17,9 @@ from pathlib import Path
 
 from celery import shared_task
 
+from flask import current_app
+from werkzeug.local import LocalProxy
+
 from invenio_client import InvenioRDM
 from invenio_client.models.record import RecordDraft
 
@@ -25,9 +28,15 @@ from storm_pipeline.pipeline.records.api import ResearchPipeline
 from storm_compendium.compendium.records.api import CompendiumRecord
 
 from . import config
+from ...utils import date_now_iso8601
 from ...template import render_template
 from ...transformer.transformer import transform_object
-from ...utils import date_now_iso8601
+
+
+gkhub_datacite_id = LocalProxy(
+    lambda: current_app.config["STORM_DEPOSIT_GKHUB_CONTRIB_DATACITE_ID"]
+)
+"""GEO Knowledge Hub DataCite ID."""
 
 
 @shared_task
@@ -39,36 +48,26 @@ def service_task(
 ):
     """Service task to prepare and send the project to an InvenioRDM instance."""
 
-    # Preparing the metadata
-    project_metadata = transform_object(project, config.TRANSFORMER_CONFIG)
-    project_metadata = render_template(
-        "metadata.json",
+    # Preparing the Knowledge Package metadata
+    knowledge_package = transform_object(project, config.TRANSFORMER_CONFIG)
+    knowledge_package = render_template(
+        "knowledge-package.json",
         config.TEMPLATE_PATH,
-        project=project,
+        kpackage=knowledge_package,
         now=date_now_iso8601(),
     )
 
-    # Organizing the files
-    zip_files = []
+    knowledge_package = RecordDraft(knowledge_package)
+    knowledge_package = invenio_client.records.draft().create(knowledge_package)
+
+    # Preparing the Knowledge Resources files and metadata
+    knowledge_package_parts = []
+
     tempdir = Path(tempfile.mkdtemp())
 
     for pipeline in pipelines:
         pipeline_vertices = list(pipeline.graph["nodes"].keys())
         pipeline_vertices = py_.map(pipeline_vertices, CompendiumRecord.pid.resolve)
-
-        """
-        Zip hierarchy:
-         - pipeline
-          - <pipeline-id>
-            - <file>
-            - <file>
-            ...
-          - <pipeline-id>
-            - <file>
-            - <file>
-            - ...
-          ...
-        """
 
         # Preparing the package
         package_dir = tempdir / pipeline.pid.pid_value
@@ -95,15 +94,39 @@ def service_task(
         bagit.make_bag(package_dir_data)
         shutil.make_archive(zip_file, "zip", package_dir_data)
 
-        # saving the zip file
-        zip_files.append(f"{zip_file}.zip")
+        # Uploading the pipeline record
+        knowledge_resource = render_template(
+            "knowledge-resource.json",
+            config.TEMPLATE_PATH,
+            project=project,
+            kpackage=knowledge_package,
+            pipeline=pipeline,
+            instance_pid=gkhub_datacite_id,
+            now=date_now_iso8601(),
+        )
 
+        knowledge_resource = RecordDraft(knowledge_resource)
+        knowledge_resource = invenio_client.records.draft().create(knowledge_resource)
+
+        zip_file = f"{zip_file}.zip"
+        invenio_client.records.files(knowledge_resource).upload_files(
+            {Path(zip_file).name: zip_file},
+            commit=True,
+        )
+
+        # Saving the knowledge resource reference.
+        knowledge_package_parts.append(
+            {
+                "identifier": f"{gkhub_datacite_id}/{knowledge_resource.id}",
+                "scheme": "doi",
+                "relation_type": {"id": "haspart", "title": {"en": "Has part"}},
+            }
+        )
+
+        # Excluding the data directory file
         shutil.rmtree(package_dir)
 
-    created_draft = RecordDraft(project_metadata)
-    created_draft = invenio_client.records.draft().create(created_draft)
+    # Linking the knowledge resources with the Knowledge Package
+    knowledge_package["metadata"]["related_identifiers"] = knowledge_package_parts
 
-    invenio_client.records.files(created_draft).upload_files(
-        {Path(file).name: file for file in zip_files},
-        commit=True,
-    )
+    invenio_client.records.draft().save(knowledge_package)

@@ -1,6 +1,7 @@
 {
     "metadata": {
         "publisher": "Storm Web Service",
+        "publication_date": "{{now}}",
         "title": "{{project.metadata['title']}}",
         "description": "{{project.metadata['description']}}",
         "subjects": {{project.metadata["subjects"]}},
