@@ -9,7 +9,7 @@
 from pydash import py_
 from typing import List
 
-from invenio_client import InvenioRDM
+from storm_client_invenio import InvenioRDM
 
 from storm_project.project.records.api import ResearchProject
 from storm_pipeline.pipeline.records.api import ResearchPipeline

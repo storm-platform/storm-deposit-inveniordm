@@ -17,8 +17,8 @@ from pathlib import Path
 
 from celery import shared_task
 
-from invenio_client import InvenioRDM
-from invenio_client.models.record import RecordDraft
+from storm_client_invenio import InvenioRDM
+from storm_client_invenio.models.record import RecordDraft
 
 from storm_project.project.records.api import ResearchProject
 from storm_pipeline.pipeline.records.api import ResearchPipeline
