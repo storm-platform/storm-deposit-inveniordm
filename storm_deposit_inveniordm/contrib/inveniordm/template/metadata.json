@@ -1,0 +1,13 @@
+{
+    "metadata": {
+        "publisher": "Storm Web Service",
+        "title": "{{project.metadata['title']}}",
+        "description": "{{project.metadata['description']}}",
+        "subjects": {{project.metadata["subjects"]}},
+        "rights": {{project.metadata["rights"]}},
+        "creators": {{project.metadata["creators"]}},
+        "contributors": {{project.metadata["contributors"]}},
+        "locations": {{project.metadata["locations"]}},
+        "dates": {{project.metadata["dates"]}},
+    }
+}

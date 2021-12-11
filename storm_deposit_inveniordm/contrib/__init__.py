@@ -6,9 +6,4 @@
 # modify it under the terms of the MIT License; see LICENSE file for more
 # details.
 
-"""Plugin to enable deposit operations in InvenioRDM instances."""
-
-from .version import __version__
-from .plugin import StormDepositInvenioRDM
-
-__all__ = ("StormDepositInvenioRDM", "__version__")
+CONTRIB_MODULES = ["storm_deposit_inveniordm.contrib.inveniordm"]
