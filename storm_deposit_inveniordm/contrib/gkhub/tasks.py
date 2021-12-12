@@ -6,46 +6,38 @@
 # modify it under the terms of the MIT License; see LICENSE file for more
 # details.
 
-import bagit
 import shutil
 import tempfile
-
-from pydash import py_
-from typing import List
-
 from pathlib import Path
+
+import bagit
+from pydash import py_
 
 from celery import shared_task
 
-from flask import current_app
-from werkzeug.local import LocalProxy
-
-from storm_client_invenio import InvenioRDM
 from storm_client_invenio.models.record import RecordDraft
-
-from storm_project.project.records.api import ResearchProject
 from storm_pipeline.pipeline.records.api import ResearchPipeline
 from storm_compendium.compendium.records.api import CompendiumRecord
 
-from . import config
-from ...utils import date_now_iso8601
-from ...template import render_template
-from ...transformer.transformer import transform_object
+import storm_deposit_inveniordm.contrib.gkhub.config as config
 
-
-gkhub_datacite_id = LocalProxy(
-    lambda: current_app.config["STORM_DEPOSIT_GKHUB_CONTRIB_DATACITE_ID"]
+from storm_deposit_inveniordm.contrib.gkhub.proxies import (
+    gkhub_datacite_id,
+    gkhub_server_url,
 )
-"""GEO Knowledge Hub DataCite ID."""
+
+from storm_deposit_inveniordm.helper.dates import date_now_iso8601
+from storm_deposit_inveniordm.helper.template import render_template
+from storm_deposit_inveniordm.transformer.transformer import transform_object
+
+from storm_deposit_inveniordm.helper.records import pass_records
+from storm_deposit_inveniordm.helper.invenio import pass_invenio_client
 
 
 @shared_task
-def service_task(
-    project: ResearchProject,
-    pipelines: List[ResearchPipeline],
-    invenio_client: InvenioRDM = None,
-    **kwargs,
-):
+@pass_invenio_client(gkhub_server_url)
+@pass_records
+def service_task(deposit, project, invenio_client, **kwargs):
     """Service task to prepare and send the project to an InvenioRDM instance."""
 
     # Preparing the Knowledge Package metadata
@@ -62,10 +54,11 @@ def service_task(
 
     # Preparing the Knowledge Resources files and metadata
     knowledge_package_parts = []
-
     tempdir = Path(tempfile.mkdtemp())
 
-    for pipeline in pipelines:
+    for pipeline in deposit.pipelines:
+        pipeline = ResearchPipeline.get_record(id_=pipeline.id)
+
         pipeline_vertices = list(pipeline.graph["nodes"].keys())
         pipeline_vertices = py_.map(pipeline_vertices, CompendiumRecord.pid.resolve)
 

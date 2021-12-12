@@ -17,29 +17,34 @@ from pathlib import Path
 
 from celery import shared_task
 
-from storm_client_invenio import InvenioRDM
 from storm_client_invenio.models.record import RecordDraft
-
-from storm_project.project.records.api import ResearchProject
 from storm_pipeline.pipeline.records.api import ResearchPipeline
 from storm_compendium.compendium.records.api import CompendiumRecord
 
-from . import config
-from ...template import render_template
-from ...transformer.transformer import transform_object
-from ...utils import date_now_iso8601
+import storm_deposit_inveniordm.contrib.inveniordm.config as config
+
+from storm_deposit_inveniordm.helper.dates import date_now_iso8601
+from storm_deposit_inveniordm.helper.template import render_template
+from storm_deposit_inveniordm.transformer.transformer import transform_object
+
+from storm_deposit_inveniordm.helper.records import pass_records
+from storm_deposit_inveniordm.helper.invenio import pass_invenio_client
+from storm_deposit_inveniordm.contrib.inveniordm.proxies import invenio_rdm_server_url
 
 
 @shared_task
-def service_task(
-    project: ResearchProject,
-    pipelines: List[ResearchPipeline],
-    invenio_client: InvenioRDM = None,
-    **kwargs,
-):
+@pass_invenio_client(invenio_rdm_server_url)
+@pass_records
+def service_task(deposit, project, invenio_client, **kwargs):
     """Service task to prepare and send the project to an InvenioRDM instance."""
 
-    # Preparing the metadata
+    # Checking for a custom fields definition.
+    custom_fields_metadata = deposit.metadata or {}
+
+    if custom_fields_metadata:
+        project.metadata.update(custom_fields_metadata)
+
+    # Preparing the record metadata.
     project_metadata = transform_object(project, config.TRANSFORMER_CONFIG)
     project_metadata = render_template(
         "metadata.json",
@@ -52,23 +57,11 @@ def service_task(
     zip_files = []
     tempdir = Path(tempfile.mkdtemp())
 
-    for pipeline in pipelines:
+    for pipeline in deposit.pipelines:
+        pipeline = ResearchPipeline.get_record(id_=pipeline.id)
+
         pipeline_vertices = list(pipeline.graph["nodes"].keys())
         pipeline_vertices = py_.map(pipeline_vertices, CompendiumRecord.pid.resolve)
-
-        """
-        Zip hierarchy:
-         - pipeline
-          - <pipeline-id>
-            - <file>
-            - <file>
-            ...
-          - <pipeline-id>
-            - <file>
-            - <file>
-            - ...
-          ...
-        """
 
         # Preparing the package
         package_dir = tempdir / pipeline.pid.pid_value

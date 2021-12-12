@@ -9,8 +9,7 @@
 from flask import current_app
 from werkzeug.local import LocalProxy
 
-
-current_storm_deposit_inveniordm = LocalProxy(
-    lambda: current_app.extensions["storm-deposit-inveniordm"]
+invenio_rdm_server_url = LocalProxy(
+    lambda: current_app.config["STORM_DEPOSIT_INVENIORDM_SERVER_URL"]
 )
-"""Helper proxy to get the current StormCompendium extension."""
+"""InvenioRDM instance to deposit storm project/pipelines."""
