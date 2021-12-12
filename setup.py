@@ -33,6 +33,8 @@ install_requires = [
     "bagit>=1.8.1,<2",
     # Storm dependencies
     "storm-client-invenio @ git+https://github.com/storm-platform/storm-client-invenio",
+    "storm-project @ git+https://github.com/storm-platform/storm-project",
+    "storm-pipeline @ git+https://github.com/storm-platform/storm-pipeline",
 ]
 
 packages = find_packages()
