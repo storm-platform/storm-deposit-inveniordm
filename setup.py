@@ -32,9 +32,10 @@ install_requires = [
     "jinja2>=3.0.3,<4.0.0",
     "bagit>=1.8.1,<2",
     # Storm dependencies
-    "storm-client-invenio @ git+https://github.com/storm-platform/storm-client-invenio",
     "storm-project @ git+https://github.com/storm-platform/storm-project",
     "storm-pipeline @ git+https://github.com/storm-platform/storm-pipeline",
+    "storm-commons @ git+https://github.com/storm-platform/storm-compendium",
+    "storm-client-invenio @ git+https://github.com/storm-platform/storm-client-invenio",
 ]
 
 packages = find_packages()
