@@ -13,4 +13,4 @@ from werkzeug.local import LocalProxy
 current_storm_deposit_inveniordm = LocalProxy(
     lambda: current_app.extensions["storm-deposit-inveniordm"]
 )
-"""Helper proxy to get the current StormCompendium extension."""
+"""Helper proxy to get the current Storm Deposit InvenioRDM extension."""

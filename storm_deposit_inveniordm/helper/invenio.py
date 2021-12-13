@@ -12,17 +12,6 @@ from storm_client_invenio import InvenioRDM
 from werkzeug.local import LocalProxy
 
 
-def invenio_client_factory(server_url: str, access_token: str):
-    """Factory to create a InvenioRDM client object.
-
-    Args:
-        server_url (str): Service address.
-
-        access_token (str): Access token to access the invenioRDM.
-    """
-    return InvenioRDM(server_url, access_token)
-
-
 def pass_invenio_client(url_server_proxy: LocalProxy):
     """Wrapper decorator function to define a specific service url
     to use in the InvenioRDM client factory.
@@ -45,7 +34,7 @@ def pass_invenio_client(url_server_proxy: LocalProxy):
                 if not access_token:
                     raise RuntimeError("Invalid `access_token`")
 
-                invenio_client = invenio_client_factory(
+                invenio_client = InvenioRDM(
                     url_server_proxy._get_current_object(), access_token
                 )
             except:
