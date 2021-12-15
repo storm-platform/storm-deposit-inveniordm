@@ -11,7 +11,6 @@ import shutil
 import tempfile
 
 from pydash import py_
-from typing import List
 
 from pathlib import Path
 

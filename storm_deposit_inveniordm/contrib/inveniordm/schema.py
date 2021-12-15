@@ -9,7 +9,7 @@
 import marshmallow as ma
 
 from marshmallow_utils.fields import SanitizedUnicode
-from storm_commons.schema.validators import marshmallow_not_blank_field
+from storm_commons.schemas.validators import marshmallow_not_blank_field
 
 
 class InvenioRDMExtSchema(ma.Schema):
