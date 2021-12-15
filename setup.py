@@ -32,10 +32,8 @@ install_requires = [
     "pydash>=5.1.0,<6.0",
     "bagit>=1.8.1,<2",
     # Storm dependencies
-    "storm-project @ git+https://github.com/storm-platform/storm-project",
-    "storm-pipeline @ git+https://github.com/storm-platform/storm-pipeline",
-    "storm-commons @ git+https://github.com/storm-platform/storm-compendium",
-    "storm-client-invenio @ git+https://github.com/storm-platform/storm-client-invenio",
+    "storm-pipeline @ git+https://github.com/storm-platform/storm-pipeline@main",
+    "storm-client-invenio @ git+https://github.com/storm-platform/storm-client-invenio@main",
 ]
 
 packages = find_packages()
