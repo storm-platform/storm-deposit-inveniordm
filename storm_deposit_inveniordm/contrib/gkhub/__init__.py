@@ -35,6 +35,7 @@ class PluginService:
     metadata = {
         "title": "InvenioRDM deposit plugin",
         "description": "Deposit plugin to send Storm WS workflows to GEO Knowledge Hub instances.",
+        "customizable-metadata-fields": []
     }
 
     #
