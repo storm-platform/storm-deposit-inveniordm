@@ -29,7 +29,6 @@ extras_require["all"] = [req for _, reqs in extras_require.items() for req in re
 setup_requires = []
 
 install_requires = [
-    "pydash>=5.1.0,<6.0",
     "bagit>=1.8.1,<2",
     # Storm dependencies
     "storm-pipeline @ git+https://github.com/storm-platform/storm-pipeline@main",
