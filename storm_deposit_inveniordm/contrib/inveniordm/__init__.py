@@ -36,7 +36,14 @@ class PluginService:
     metadata = {
         "title": "InvenioRDM deposit plugin",
         "description": "Deposit plugin to send Storm WS workflows to Invenio RDM instances.",
-        "customizable-metadata-fields": ["title", "description"]
+        "customizable_metadata_fields": ["title", "description"],
+        "required_fields": [
+            {
+                "title": "Invenio RDM Rest API Access Token",
+                "description": "Your InvenioRDM instance access token, used to save the record draft in the system",
+                "field_name": "access_token",
+            }
+        ],
     }
 
     #
