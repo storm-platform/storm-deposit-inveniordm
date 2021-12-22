@@ -38,7 +38,7 @@ def service_task(deposit, project, invenio_client, **kwargs):
     """Service task to prepare and send the project to an InvenioRDM instance."""
 
     # Checking for a custom fields definition.
-    custom_fields_metadata = deposit.metadata or {}
+    custom_fields_metadata = deposit.customizations or {}
 
     if custom_fields_metadata:
         project.metadata.update(custom_fields_metadata)
