@@ -6,7 +6,7 @@
 # modify it under the terms of the MIT License; see LICENSE file for more
 # details.
 
-TEMPLATE_PATH = "gkhub/template"
+TEMPLATE_PATH = "gkhub/templates"
 
 PLUGIN_SERVICE_NAME = "deposit-gkhub"
 

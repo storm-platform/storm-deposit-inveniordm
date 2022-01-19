@@ -8,7 +8,7 @@
 
 PLUGIN_SERVICE_NAME = "deposit-inveniordm"
 
-TEMPLATE_PATH = "inveniordm/template"
+TEMPLATE_PATH = "inveniordm/templates"
 
 TRANSFORMER_CONFIG = {
     "metadata.subjects": {
