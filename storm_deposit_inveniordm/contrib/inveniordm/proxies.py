@@ -12,4 +12,4 @@ from werkzeug.local import LocalProxy
 invenio_rdm_server_url = LocalProxy(
     lambda: current_app.config["STORM_DEPOSIT_INVENIORDM_SERVER_URL"]
 )
-"""InvenioRDM instance to deposit storm project/pipelines."""
+"""InvenioRDM instance to deposit storm project/workflows."""

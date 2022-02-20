@@ -2,9 +2,9 @@
     "metadata": {
         "publisher": "Storm Web Service",
         "publication_date": "{{now}}",
-        "title": "Knowledge Resource - {{pipeline.metadata['title']}}",
-        "description": "{{pipeline.metadata['description']}}",
-        "version": "{{pipeline.metadata['version']}}",
+        "title": "Knowledge Resource - {{workflow.metadata['title']}}",
+        "description": "{{workflow.metadata['description']}}",
+        "version": "{{workflow.metadata['version']}}",
         "rights": {{project.metadata["rights"]}},
         "creators": {{project.metadata["creators"]}},
         "related_identifiers": [

@@ -8,7 +8,7 @@
 
 from functools import wraps
 
-from storm_deposit.deposit.models.api import Deposit
+from storm_deposit.deposit.models.api import DepositTask
 from storm_project.project.records.api import ResearchProject
 
 
@@ -19,7 +19,7 @@ def pass_records(f):
     def wrapper(deposit_id, invenio_client, *args, **kwargs):
         try:
             # loading the defined deposit record
-            deposit_object = Deposit.get_record(id=deposit_id)
+            deposit_object = DepositTask.get_record(id=deposit_id)
             project_object = ResearchProject.get_record(id_=deposit_object.project.id)
 
         except:
