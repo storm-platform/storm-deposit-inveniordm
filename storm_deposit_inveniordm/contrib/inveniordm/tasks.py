@@ -17,7 +17,7 @@ from pathlib import Path
 from celery import shared_task
 
 from storm_client_invenio.models.record import RecordDraft
-from storm_pipeline.pipeline.records.api import ResearchPipeline
+from storm_workflow.workflow.records.api import ResearchWorkflow
 from storm_compendium.compendium.records.api import CompendiumRecord
 
 import storm_deposit_inveniordm.contrib.inveniordm.config as config
@@ -56,33 +56,33 @@ def service_task(deposit, project, invenio_client, **kwargs):
     zip_files = []
     tempdir = Path(tempfile.mkdtemp())
 
-    for pipeline in deposit.pipelines:
-        pipeline = ResearchPipeline.get_record(id_=pipeline.id)
+    for workflow in deposit.workflows:
+        workflow = ResearchWorkflow.get_record(id_=workflow.id)
 
-        pipeline_vertices = list(pipeline.graph["nodes"].keys())
-        pipeline_vertices = py_.map(pipeline_vertices, CompendiumRecord.pid.resolve)
+        workflow_vertices = list(workflow.graph["nodes"].keys())
+        workflow_vertices = py_.map(workflow_vertices, CompendiumRecord.pid.resolve)
 
         # Preparing the package
-        package_dir = tempdir / pipeline.pid.pid_value
+        package_dir = tempdir / workflow.pid.pid_value
         package_dir_data = package_dir / "data"
 
-        for pipeline_vertex in pipeline_vertices:
+        for workflow_vertex in workflow_vertices:
 
-            pipeline_vertex_id = pipeline_vertex.pid.pid_value
+            workflow_vertex_id = workflow_vertex.pid.pid_value
 
-            pipeline_vertex_data = package_dir_data / pipeline_vertex_id
-            pipeline_vertex_data.mkdir(parents=True)
+            workflow_vertex_data = package_dir_data / workflow_vertex_id
+            workflow_vertex_data.mkdir(parents=True)
 
-            files_entries = pipeline_vertex.files.entries
-            for pipeline_vertex_file in files_entries:
-                file_entry = files_entries[pipeline_vertex_file]
+            files_entries = workflow_vertex.files.entries
+            for workflow_vertex_file in files_entries:
+                file_entry = files_entries[workflow_vertex_file]
                 file_source = Path(file_entry.file.file_model.uri)
-                file_target = pipeline_vertex_data / pipeline_vertex_file
+                file_target = workflow_vertex_data / workflow_vertex_file
 
                 shutil.copy(file_source, file_target)
 
         # Creating the bagit file
-        zip_file = tempdir / pipeline.pid.pid_value
+        zip_file = tempdir / workflow.pid.pid_value
 
         bagit.make_bag(package_dir_data)
         shutil.make_archive(zip_file, "zip", package_dir_data)

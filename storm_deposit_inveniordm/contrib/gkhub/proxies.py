@@ -12,7 +12,7 @@ from werkzeug.local import LocalProxy
 gkhub_server_url = LocalProxy(
     lambda: current_app.config["STORM_DEPOSIT_GEOKNOWLEDGEHUB_SERVER_URL"]
 )
-"""GEO Knowledge Hub instance to deposit storm project/pipelines."""
+"""GEO Knowledge Hub instance to deposit storm project/workflows."""
 
 gkhub_datacite_id = LocalProxy(
     lambda: current_app.config["STORM_DEPOSIT_GKHUB_CONTRIB_DATACITE_ID"]
