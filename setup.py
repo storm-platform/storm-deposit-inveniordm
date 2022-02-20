@@ -31,7 +31,7 @@ setup_requires = []
 install_requires = [
     "bagit>=1.8.1,<2",
     # Storm dependencies
-    "storm-workflow @ git+https://github.com/storm-platform/storm-pipeline@package/rename-0.1",
+    "storm-workflow @ git+https://github.com/storm-platform/storm-workflow@main",
     "storm-client-invenio @ git+https://github.com/storm-platform/storm-client-invenio@main",
 ]
 
